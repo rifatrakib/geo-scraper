@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "geo-scraper"
+version = "0.1.0"
+description = "A Python scraper to scrape geospatial analysis data from geospatial data visualization website"
+authors = ["rifatrakib <Rakib.1508@outlook.com>"]
+license = "MIT License"
+readme = "README.md"
+packages = [{include = "geo_scraper"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Scrapy = "^2.7.1"
+pydantic = "^1.10.2"
+pymongo = "^4.3.3"
+boto3 = "^1.26.27"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^2.20.0"
+isort = "^5.10.1"
+flake8 = "^6.0.0"
+mypy = "^0.991"
+black = "^22.12.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
