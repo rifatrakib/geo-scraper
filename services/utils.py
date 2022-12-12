@@ -5,12 +5,14 @@ from pathlib import Path
 
 def prepare_json_credentials(name):
     with open(f"keys/raw/{name}.sh") as reader:
-        lines = reader.readlines()[1:-1]
+        lines = reader.readlines()
 
     headers = {}
     cookies = {}
     for line in lines:
-        key, value = line[6:-4].split(": ")
+        if not line.strip().startswith("-H"):
+            continue
+        key, value = line[4:-4].split(": ")
         if key == "cookie":
             for cookie in value.split("; "):
                 key, value = cookie.split("=", 1)
@@ -18,12 +20,18 @@ def prepare_json_credentials(name):
         else:
             headers[key] = value
 
-    location = "keys/secrets"
+    location = "keys/credentials"
     Path(location).mkdir(parents=True, exist_ok=True)
 
     secrets = {"headers": headers, "cookies": cookies}
     with open(f"{location}/{name}.json", "w") as writer:
         writer.write(json.dumps(secrets, indent=4))
+
+
+def read_json_credentials(name):
+    with open(f"keys/credentials/{name}.json") as reader:
+        credentials = json.loads(reader.read())
+    return credentials
 
 
 def run_spider(spider_name):

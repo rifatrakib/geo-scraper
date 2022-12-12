@@ -9,7 +9,7 @@ from scrapy import signals
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
 
-from services.utils import prepare_json_credentials
+from services.utils import prepare_json_credentials, read_json_credentials
 
 
 class GeoSpiderMiddleware:
@@ -27,6 +27,8 @@ class GeoSpiderMiddleware:
     def process_spider_input(self, response, spider):
         # Called for each response that goes through the spider
         # middleware and into the spider.
+        if response.status == 200:
+            response.meta["response_in"] = datetime.utcnow().isoformat()
 
         # Should return None or raise an exception.
         return None
@@ -74,6 +76,19 @@ class GeoDownloaderMiddleware:
     def process_request(self, request, spider):
         # Called for each request that goes through the downloader
         # middleware.
+        location = f"keys/credentials"
+        Path(f"{location}").mkdir(parents=True, exist_ok=True)
+        
+        if not Path(f"{location}/{spider.name}.sh").exists():
+            prepare_json_credentials(spider.name)
+        
+        credentials = read_json_credentials(spider.name)
+        
+        for key, value in credentials["headers"].items():
+            request.headers[key] = value
+        
+        for key, value in credentials["cookies"].items():
+            request.cookies[key] = value
 
         # Must either:
         # - return None: continue processing this request
