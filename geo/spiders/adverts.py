@@ -30,8 +30,8 @@ class AdvertsSpider(scrapy.Spider):
                     body=json.dumps(payload),
                     callback=self.parse,
                 )
-                break
 
     def parse(self, response):
-        yield response.json()
-        yield response.meta
+        adverts = response.json()
+        for advert in adverts:
+            yield {**advert, "metadata": response.meta}
