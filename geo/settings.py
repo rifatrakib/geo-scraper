@@ -63,6 +63,7 @@ ITEM_PIPELINES = {
     "geo.pipelines.CSVPipeline": 100,
     "geo.pipelines.JSONPipeline": 200,
     "geo.pipelines.JSONLinesPipeline": 300,
+    "geo.pipelines.MongoDBPipeline": 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -92,3 +93,6 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 
 ADVERTS_COUNTER = os.environ.get("ADVERTS_COUNTER")
 ADVERTS_PAGES = os.environ.get("ADVERTS_PAGES")
+
+MONGO_URI = os.environ.get("MONGO_URI")
+MONGO_DATABASE = os.environ.get("MONGO_DATABASE")
