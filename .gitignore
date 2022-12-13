@@ -133,3 +133,6 @@ keys/
 
 # logs
 logs/
+
+# data
+data/
