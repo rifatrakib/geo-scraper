@@ -12,7 +12,7 @@ def prepare_json_credentials(name):
     for line in lines:
         if not line.strip().startswith("-H"):
             continue
-        key, value = line[4:-4].split(": ")
+        key, value = line.strip()[4:-3].split(": ")
         if key == "cookie":
             for cookie in value.split("; "):
                 key, value = cookie.split("=", 1)
