@@ -13,6 +13,7 @@ Scrapy = "^2.7.1"
 pydantic = "^1.10.2"
 pymongo = "^4.3.3"
 boto3 = "^1.26.27"
+python-dotenv = "^0.21.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^2.20.0"
