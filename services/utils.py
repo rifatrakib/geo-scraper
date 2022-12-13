@@ -34,9 +34,14 @@ def read_json_credentials(name):
     return credentials
 
 
+def log_writer(file_path, string):
+    with open(file_path, "a") as writer:
+        writer.write(string)
+
+
 def run_spider(spider_name):
-    location = f"logs/{spider_name}"
-    Path(f"{location}").mkdir(parents=True, exist_ok=True)
+    location = "logs/spiders"
+    Path(location).mkdir(parents=True, exist_ok=True)
 
     logger = f"{location}/{spider_name}.log"
     command = f"scrapy crawl {spider_name} 2>&1 | tee {logger}"

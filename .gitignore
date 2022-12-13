@@ -130,3 +130,6 @@ dmypy.json
 
 # secrets
 keys/
+
+# logs
+logs/
