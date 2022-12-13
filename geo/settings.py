@@ -59,9 +59,11 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
-#    "geo.pipelines.GeoPipeline": 300,
-# }
+ITEM_PIPELINES = {
+    "geo.pipelines.CSVPipeline": 100,
+    "geo.pipelines.JSONPipeline": 200,
+    "geo.pipelines.JSONLinesPipeline": 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
