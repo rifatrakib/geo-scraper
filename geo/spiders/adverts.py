@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 import scrapy
 
@@ -34,4 +35,6 @@ class AdvertsSpider(scrapy.Spider):
     def parse(self, response):
         adverts = response.json()
         for advert in adverts:
-            yield {**advert, "metadata": response.meta}
+            record = {**advert, "metadata": response.meta}
+            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+            yield record

@@ -23,6 +23,8 @@ class GeoSpiderMiddleware:
         # middleware and into the spider.
         if response.status == 200:
             response.meta["response_in"] = datetime.utcnow().isoformat()
+            response.meta["request_sent"] = response.headers["request_sent"].decode("utf-8")
+            response.meta["response_received"] = response.headers["response_received"].decode("utf-8")
 
         # Should return None or raise an exception.
         return None
@@ -99,6 +101,8 @@ class GeoDownloaderMiddleware:
         for key, value in credentials["cookies"].items():
             request.cookies[key] = value
 
+        request.headers["request_sent"] = datetime.utcnow().isoformat()
+
         # Must either:
         # - return None: continue processing this request
         # - or return a Response object
@@ -111,10 +115,13 @@ class GeoDownloaderMiddleware:
         # Called with the response returned from the downloader.
         location = "logs/fails"
         Path(location).mkdir(parents=True, exist_ok=True)
+        response.headers["request_sent"] = request.headers["request_sent"]
+        response.headers["response_received"] = datetime.utcnow().isoformat()
 
         if (
             response.status == 200
-            and response.headers.get("content-type") == "application/jsonsuccess" in response.json()
+            and response.headers.get("content-type") == "application/json"
+            and "success" in response.json()
             and not response.json()["success"]
         ):
             file_path = f"{location}/{spider.name}.log"
