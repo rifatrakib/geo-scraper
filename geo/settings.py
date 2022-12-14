@@ -63,7 +63,8 @@ ITEM_PIPELINES = {
     "geo.pipelines.CSVPipeline": 100,
     "geo.pipelines.JSONPipeline": 200,
     "geo.pipelines.JSONLinesPipeline": 300,
-    "geo.pipelines.MongoDBPipeline": 300,
+    "geo.pipelines.MongoDBPipeline": 400,
+    "geo.pipelines.MetaPipeline": 500,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
