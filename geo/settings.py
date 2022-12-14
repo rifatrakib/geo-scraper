@@ -91,8 +91,10 @@ ITEM_PIPELINES = {
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 
+# links to scrape
 ADVERTS_COUNTER = os.environ.get("ADVERTS_COUNTER")
 ADVERTS_PAGES = os.environ.get("ADVERTS_PAGES")
 
+# database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
 MONGO_DATABASE = os.environ.get("MONGO_DATABASE")
