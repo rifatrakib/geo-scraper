@@ -125,6 +125,7 @@ class MongoDBPipeline:
 
     def process_item(self, item, spider):
         data = ItemAdapter(item).asdict()
+        data["scraped_on"] = datetime.combine(datetime.utcnow().date(), datetime.min.time())
         self.db[spider.name].insert_one(data)
         return item
 

@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from functools import partial
 from pathlib import Path
@@ -16,39 +17,45 @@ columns_to_read = [
 timestamps = ["request_sent", "response_received", "yield_time"]
 
 
-def plotter(i, ax, scraper, skip=0):
+def plotter(i, ax, scraper):
     date = datetime.utcnow().date().isoformat()
     file = f"data/meta/{scraper}-{date}.csv"
-
-    while True:
-        if Path(file).exists():
-            break
-
-    rows_to_skip = None
-    if skip > 0:
-        rows_to_skip = range(1, skip + 1)
 
     df = pd.read_csv(
         file,
         usecols=columns_to_read,
         parse_dates=timestamps,
-        skiprows=rows_to_skip,
     )
-    df["download_time"] = (df["request_sent"] - df["response_received"]).dt.microseconds // 1000
+    df["download_time"] = (df["response_received"] - df["request_sent"]).dt.microseconds // 1000
+    df["download_time"] = df["download_time"].where(df["download_time"] >= 0, 0.01)
     df = df.set_index("request_sent")
-    # row_count = df.shape[0]
     grouped_df = df["download_time"].resample("1S").mean(numeric_only=True)
 
     ax.cla()
-    ax.plot(grouped_df)
+    ax.plot(grouped_df, color="#007EA7")
+    ax.set_xlabel("timeline", color="#003459")
+    ax.set_ylabel("download time in ms", color="#003459")
     ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=1))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
-    ax.set_title("Scraper Performance")
+    ax.set_title(
+        "Changes over time for Average Download Time",
+        fontweight="bold",
+        fontsize=16,
+        color="#003459",
+    )
 
 
 def scraper_report(scraper):
-    fig, ax = plt.subplots(figsize=(6, 5), dpi=150)
-    ani = FuncAnimation(fig, partial(plotter, ax=ax, scraper=scraper), interval=1000)
-    print(f"{type(ani) = }")
-    plt.tight_layout()
+    fig, ax = plt.subplots(figsize=(9, 6), constrained_layout=True)
+    ani = FuncAnimation(
+        fig,
+        partial(plotter, ax=ax, scraper=scraper),
+        interval=int(os.environ.get("REFRESH_DELAY")),
+    )
     plt.show()
+
+    location = f"reports/{scraper}"
+    Path(location).mkdir(parents=True, exist_ok=True)
+    date = datetime.utcnow().date().isoformat()
+    ani.save(f"{location}/{scraper}-{date}.png", writer="imagemagick")
+    fig.savefig(f"{location}/{scraper}-{date}.png")
