@@ -113,3 +113,8 @@ DEALINGS_PAGES = os.environ.get("DEALINGS_PAGES")
 # database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
 MONGO_DATABASE = os.environ.get("MONGO_DATABASE")
+
+# website dynamic links
+HOME_URL = os.environ.get("HOME_URL")
+COUNTER_PATH = os.environ.get("COUNTER_PATH")
+TABLE_PATH = os.environ.get("TABLE_PATH")
