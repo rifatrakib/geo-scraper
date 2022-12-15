@@ -101,6 +101,9 @@ PASSWORD = os.environ.get("PASSWORD")
 ADVERTS_COUNTER = os.environ.get("ADVERTS_COUNTER")
 ADVERTS_PAGES = os.environ.get("ADVERTS_PAGES")
 
+LANDS_COUNTER = os.environ.get("LANDS_COUNTER")
+LANDS_PAGES = os.environ.get("LANDS_PAGES")
+
 # database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
 MONGO_DATABASE = os.environ.get("MONGO_DATABASE")
