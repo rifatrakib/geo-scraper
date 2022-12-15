@@ -29,7 +29,7 @@ def prepare_json_credentials(name):
 
 
 def read_json_credentials(name):
-    with open(f"keys/credentials/{name}.json") as reader:
+    with open("keys/credentials.json") as reader:
         credentials = json.loads(reader.read())
     return credentials
 
