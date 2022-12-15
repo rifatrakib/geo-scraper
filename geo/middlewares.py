@@ -101,6 +101,7 @@ class GeoDownloaderMiddleware:
         for key, value in credentials["cookies"].items():
             request.cookies[key] = value
 
+        request.headers["content-type"] = "application/json"  # IMPORTANT: server requirement
         request.headers["request_sent"] = datetime.utcnow().isoformat()
 
         # Must either:
