@@ -104,6 +104,9 @@ ADVERTS_PAGES = os.environ.get("ADVERTS_PAGES")
 LANDS_COUNTER = os.environ.get("LANDS_COUNTER")
 LANDS_PAGES = os.environ.get("LANDS_PAGES")
 
+ESTABLISHMENTS_COUNTER = os.environ.get("ESTABLISHMENTS_COUNTER")
+ESTABLISHMENTS_PAGES = os.environ.get("ESTABLISHMENTS_PAGES")
+
 # database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
 MONGO_DATABASE = os.environ.get("MONGO_DATABASE")
