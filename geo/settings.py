@@ -92,6 +92,11 @@ ITEM_PIPELINES = {
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 
+# signin variables
+SIGNIN_PATH = os.environ.get("SIGNIN_PATH")
+EMAIL = os.environ.get("EMAIL")
+PASSWORD = os.environ.get("PASSWORD")
+
 # links to scrape
 ADVERTS_COUNTER = os.environ.get("ADVERTS_COUNTER")
 ADVERTS_PAGES = os.environ.get("ADVERTS_PAGES")

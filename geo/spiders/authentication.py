@@ -8,6 +8,11 @@ from geo import settings
 
 class LandsSpider(scrapy.Spider):
     name = "authentication"
+    custom_settings = {
+        "SPIDER_MIDDLEWARES": {},
+        "DOWNLOADER_MIDDLEWARES": {},
+        "ITEM_PIPELINES": {},
+    }
 
     def start_requests(self):
         payload = {"email": settings.EMAIL, "password": settings.PASSWORD}
