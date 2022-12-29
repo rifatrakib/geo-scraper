@@ -1,9 +1,11 @@
+from pymongo import MongoClient
+
 from geo import settings
 
 
 class MongoConnectionManager:
     def __init__(self, collection):
-        self.client = settings.MONGO_URI
+        self.client = MongoClient(settings.MONGO_URI)
         self.database = settings.MONGO_DATABASE
         self.collection = collection
 

@@ -20,4 +20,7 @@ class ThresholdsSpider(scrapy.Spider):
             )
 
     def parse(self, response):
-        print(response.json())
+        response = response.json()
+        if "data" in response:
+            for data in response["data"]:
+                yield data
