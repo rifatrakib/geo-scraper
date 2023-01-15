@@ -16,10 +16,12 @@ class InfographicsSpider(scrapy.Spider):
         flat_info_query_parameter = settings.FLAT_INFO_PARAM
         warning_url = settings.WARNING_URL
         warning_query_parameter = settings.WARNING_PARAM
+        purpose_url = settings.PURPOSE_URL
+        purpose_query_parameter = settings.PURPOSE_PARAM
 
         for record in records:
             value = record[identifier]
-            short_value = "-".join(value.split("-")[:3])
+            short_value = "-".join(value.split("-")[:3]).lstrip("0")
 
             # request for flat info
             yield scrapy.Request(
@@ -29,12 +31,21 @@ class InfographicsSpider(scrapy.Spider):
 
             # request for warning
             yield scrapy.Request(
-                url=f"{warning_url}?{warning_query_parameter}={short_value.lstrip('0')}",
+                url=f"{warning_url}?{warning_query_parameter}={short_value}",
                 callback=self.parse_warning,
+            )
+
+            # request for warning
+            yield scrapy.Request(
+                url=f"{purpose_url}?{purpose_query_parameter}={short_value}",
+                callback=self.parse_purpose,
             )
 
     def parse_flat_info(self, response):
         print(response.json())
 
     def parse_warning(self, response):
+        print(response.json())
+
+    def parse_purpose(self, response):
         print(response.json())
