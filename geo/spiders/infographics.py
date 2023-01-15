@@ -10,16 +10,31 @@ class InfographicsSpider(scrapy.Spider):
     def start_requests(self):
         connector = settings.THRESHOLDS_CONNECTOR
         identifier = settings.THRESHOLDS_IDENTIFIER
-        flat_info_url = settings.FLAT_INFO_URL
-        query_parameter = settings.FLAT_INFO_PARAM
         records = extract_data_from_stored_records(connector, identifier)
+
+        flat_info_url = settings.FLAT_INFO_URL
+        flat_info_query_parameter = settings.FLAT_INFO_PARAM
+        warning_url = settings.WARNING_URL
+        warning_query_parameter = settings.WARNING_PARAM
+
         for record in records:
             value = record[identifier]
+            short_value = "-".join(value.split("-")[:3])
+
             # request for flat info
             yield scrapy.Request(
-                url=f"{flat_info_url}?{query_parameter}={value}",
-                callback=self.parse,
+                url=f"{flat_info_url}?{flat_info_query_parameter}={value}",
+                callback=self.parse_flat_info,
             )
 
-    def parse(self, response):
+            # request for warning
+            yield scrapy.Request(
+                url=f"{warning_url}?{warning_query_parameter}={short_value.lstrip('0')}",
+                callback=self.parse_warning,
+            )
+
+    def parse_flat_info(self, response):
+        print(response.json())
+
+    def parse_warning(self, response):
         print(response.json())

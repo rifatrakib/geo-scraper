@@ -122,6 +122,9 @@ THRESHOLDS_CONNECTOR = os.environ.get("THRESHOLDS_CONNECTOR")
 FLAT_INFO_URL = os.environ.get("FLAT_INFO_URL")
 FLAT_INFO_PARAM = os.environ.get("FLAT_INFO_PARAM")
 
+WARNING_URL = os.environ.get("WARNING_URL")
+WARNING_PARAM = os.environ.get("WARNING_PARAM")
+
 # database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
 MONGO_DATABASE = os.environ.get("MONGO_DATABASE")
