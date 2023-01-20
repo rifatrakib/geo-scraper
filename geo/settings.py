@@ -128,6 +128,9 @@ WARNING_PARAM = os.environ.get("WARNING_PARAM")
 PURPOSE_URL = os.environ.get("PURPOSE_URL")
 PURPOSE_PARAM = os.environ.get("PURPOSE_PARAM")
 
+PLAN_URL = os.environ.get("PLAN_URL")
+PLAN_PARAM = os.environ.get("PLAN_PARAM")
+
 # database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
 MONGO_DATABASE = os.environ.get("MONGO_DATABASE")

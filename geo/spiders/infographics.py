@@ -18,6 +18,8 @@ class InfographicsSpider(scrapy.Spider):
         warning_query_parameter = settings.WARNING_PARAM
         purpose_url = settings.PURPOSE_URL
         purpose_query_parameter = settings.PURPOSE_PARAM
+        plan_url = settings.PLAN_URL
+        plan_query_parameter = settings.PLAN_PARAM
 
         for record in records:
             value = record[identifier]
@@ -35,10 +37,16 @@ class InfographicsSpider(scrapy.Spider):
                 callback=self.parse_warning,
             )
 
-            # request for warning
+            # request for purpose
             yield scrapy.Request(
                 url=f"{purpose_url}?{purpose_query_parameter}={short_value}",
                 callback=self.parse_purpose,
+            )
+
+            # request for plan
+            yield scrapy.Request(
+                url=f"{plan_url}?{plan_query_parameter}={short_value}",
+                callback=self.parse_plan,
             )
 
     def parse_flat_info(self, response):
@@ -48,4 +56,7 @@ class InfographicsSpider(scrapy.Spider):
         print(response.json())
 
     def parse_purpose(self, response):
+        print(response.json())
+
+    def parse_plan(self, response):
         print(response.json())
