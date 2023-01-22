@@ -20,6 +20,7 @@ class InfographicsSpider(scrapy.Spider):
         purpose_query_parameter = settings.PURPOSE_PARAM
         plan_url = settings.PLAN_URL
         plan_query_parameter = settings.PLAN_PARAM
+        dwellers_url = settings.DWELLERS_URL
 
         for record in records:
             value = record[identifier]
@@ -53,6 +54,13 @@ class InfographicsSpider(scrapy.Spider):
                 cb_kwargs={"id": value},
             )
 
+            # request for dwellers
+            yield scrapy.Request(
+                url=f"{dwellers_url}/{value}",
+                callback=self.parse_dwellers,
+                cb_kwargs={"id": value},
+            )
+
     def parse_flat_info(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
 
@@ -63,4 +71,7 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_plan(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_dwellers(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
