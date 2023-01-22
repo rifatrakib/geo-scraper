@@ -136,6 +136,9 @@ DWELLERS_URL = os.environ.get("DWELLERS_URL")
 APARTMENT_URL = os.environ.get("APARTMENT_URL")
 SUBLETERS_URL = os.environ.get("SUBLETERS_URL")
 
+EXTERNAL_LINKS_URL = os.environ.get("EXTERNAL_LINKS_URL")
+EXTERNAL_LINKS_PARAM = os.environ.get("EXTERNAL_LINKS_PARAM")
+
 # database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
 MONGO_DATABASE = os.environ.get("MONGO_DATABASE")

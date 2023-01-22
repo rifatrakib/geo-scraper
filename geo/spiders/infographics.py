@@ -14,15 +14,22 @@ class InfographicsSpider(scrapy.Spider):
 
         flat_info_url = settings.FLAT_INFO_URL
         flat_info_query_parameter = settings.FLAT_INFO_PARAM
+
         warning_url = settings.WARNING_URL
         warning_query_parameter = settings.WARNING_PARAM
+
         purpose_url = settings.PURPOSE_URL
         purpose_query_parameter = settings.PURPOSE_PARAM
+
         plan_url = settings.PLAN_URL
         plan_query_parameter = settings.PLAN_PARAM
+
         dwellers_url = settings.DWELLERS_URL
         apartment_url = settings.APARTMENT_URL
         subleters_url = settings.SUBLETERS_URL
+
+        external_links_url = settings.EXTERNAL_LINKS_URL
+        external_links_param = settings.EXTERNAL_LINKS_PARAM
 
         for record in records:
             value = record[identifier]
@@ -63,17 +70,24 @@ class InfographicsSpider(scrapy.Spider):
                 cb_kwargs={"id": value},
             )
 
-            # request for dwellers
+            # request for apartment
             yield scrapy.Request(
                 url=f"{apartment_url}/{value}",
                 callback=self.parse_apartments,
                 cb_kwargs={"id": value},
             )
 
-            # request for dwellers
+            # request for subleters
             yield scrapy.Request(
                 url=f"{subleters_url}/{value}",
                 callback=self.parse_subleters,
+                cb_kwargs={"id": value},
+            )
+
+            # request for external links
+            yield scrapy.Request(
+                url=f"{external_links_url}?{external_links_param}={value.lstrip('0')}",
+                callback=self.parse_external_links,
                 cb_kwargs={"id": value},
             )
 
@@ -96,4 +110,7 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_subleters(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_external_links(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
