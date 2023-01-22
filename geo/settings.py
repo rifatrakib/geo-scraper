@@ -133,6 +133,9 @@ PLAN_PARAM = os.environ.get("PLAN_PARAM")
 
 DWELLERS_URL = os.environ.get("DWELLERS_URL")
 
+APARTMENT_URL = os.environ.get("APARTMENT_URL")
+SUBLETERS_URL = os.environ.get("SUBLETERS_URL")
+
 # database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
 MONGO_DATABASE = os.environ.get("MONGO_DATABASE")
