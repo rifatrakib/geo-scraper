@@ -34,6 +34,8 @@ class InfographicsSpider(scrapy.Spider):
         flat_registration_url = settings.FLAT_REGISTRATION_URL
         flat_location_url = settings.FLAT_LOCATION_URL
 
+        land_establishments_url = settings.LAND_ESTABLISHMENTS_URL
+
         for record in records:
             value = record[identifier]
             short_value = "-".join(value.split("-")[:3]).lstrip("0")
@@ -108,6 +110,13 @@ class InfographicsSpider(scrapy.Spider):
                 cb_kwargs={"id": value},
             )
 
+            # request for land establishments
+            yield scrapy.Request(
+                url=f"{land_establishments_url}/{value}",
+                callback=self.parse_land_establishments,
+                cb_kwargs={"id": value},
+            )
+
     def parse_flat_info(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
 
@@ -136,4 +145,7 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_flat_location(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_land_establishments(self, response, **kwargs):
         print({**kwargs, "data": response.json()})

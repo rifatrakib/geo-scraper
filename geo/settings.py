@@ -142,6 +142,8 @@ EXTERNAL_LINKS_PARAM = os.environ.get("EXTERNAL_LINKS_PARAM")
 FLAT_REGISTRATION_URL = os.environ.get("FLAT_REGISTRATION_URL")
 FLAT_LOCATION_URL = os.environ.get("FLAT_LOCATION_URL")
 
+LAND_ESTABLISHMENTS_URL = os.environ.get("LAND_ESTABLISHMENTS_URL")
+
 # database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
 MONGO_DATABASE = os.environ.get("MONGO_DATABASE")
