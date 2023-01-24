@@ -146,6 +146,7 @@ LAND_ESTABLISHMENTS_URL = os.environ.get("LAND_ESTABLISHMENTS_URL")
 LAND_FLATS_URL = os.environ.get("LAND_FLATS_URL")
 LAND_UTILITIES_URL = os.environ.get("LAND_UTILITIES_URL")
 LAND_ATTACHMENTS_URL = os.environ.get("LAND_ATTACHMENTS_URL")
+LAND_REGISTRATION_URL = os.environ.get("LAND_REGISTRATION_URL")
 
 # database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
