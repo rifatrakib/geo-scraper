@@ -31,6 +31,9 @@ class InfographicsSpider(scrapy.Spider):
         external_links_url = settings.EXTERNAL_LINKS_URL
         external_links_param = settings.EXTERNAL_LINKS_PARAM
 
+        flat_registration_url = settings.FLAT_REGISTRATION_URL
+        flat_location_url = settings.FLAT_LOCATION_URL
+
         for record in records:
             value = record[identifier]
             short_value = "-".join(value.split("-")[:3]).lstrip("0")
@@ -91,6 +94,20 @@ class InfographicsSpider(scrapy.Spider):
                 cb_kwargs={"id": value},
             )
 
+            # request for flat registration
+            yield scrapy.Request(
+                url=f"{flat_registration_url}/{value}",
+                callback=self.parse_flat_registration,
+                cb_kwargs={"id": value},
+            )
+
+            # request for flat location
+            yield scrapy.Request(
+                url=f"{flat_location_url}/{value}",
+                callback=self.parse_flat_location,
+                cb_kwargs={"id": value},
+            )
+
     def parse_flat_info(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
 
@@ -113,4 +130,10 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_external_links(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_flat_registration(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_flat_location(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
