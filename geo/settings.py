@@ -151,6 +151,7 @@ LAND_REGISTRATION_URL = os.environ.get("LAND_REGISTRATION_URL")
 LAND_ADDRESS_URL = os.environ.get("LAND_ADDRESS_URL")
 
 SURVEY_NAMES_URL = os.environ.get("SURVEY_NAMES_URL")
+SURVEY_REPORT_URL = os.environ.get("SURVEY_REPORT_URL")
 
 # database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
