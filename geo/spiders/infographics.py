@@ -39,7 +39,6 @@ class InfographicsSpider(scrapy.Spider):
         land_utilities_url = settings.LAND_UTILITIES_URL
         land_attachments_url = settings.LAND_ATTACHMENTS_URL
         land_registration_url = settings.LAND_REGISTRATION_URL
-
         land_address_url = settings.LAND_ADDRESS_URL
 
         for record in records:
@@ -50,112 +49,112 @@ class InfographicsSpider(scrapy.Spider):
             yield scrapy.Request(
                 url=f"{flat_info_url}?{flat_info_query_parameter}={value}",
                 callback=self.parse_flat_info,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for warning
             yield scrapy.Request(
                 url=f"{warning_url}?{warning_query_parameter}={short_value}",
                 callback=self.parse_warning,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for purpose
             yield scrapy.Request(
                 url=f"{purpose_url}?{purpose_query_parameter}={short_value}",
                 callback=self.parse_purpose,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for plan
             yield scrapy.Request(
                 url=f"{plan_url}?{plan_query_parameter}={short_value}",
                 callback=self.parse_plan,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for dwellers
             yield scrapy.Request(
                 url=f"{dwellers_url}/{value}",
                 callback=self.parse_dwellers,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for apartment
             yield scrapy.Request(
                 url=f"{apartment_url}/{value}",
                 callback=self.parse_apartments,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for subleters
             yield scrapy.Request(
                 url=f"{subleters_url}/{value}",
                 callback=self.parse_subleters,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for external links
             yield scrapy.Request(
                 url=f"{external_links_url}?{external_links_param}={value.lstrip('0')}",
                 callback=self.parse_external_links,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for flat registration
             yield scrapy.Request(
                 url=f"{flat_registration_url}/{value}",
                 callback=self.parse_flat_registration,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for flat location
             yield scrapy.Request(
                 url=f"{flat_location_url}/{value}",
                 callback=self.parse_flat_location,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for land establishments
             yield scrapy.Request(
                 url=f"{land_establishments_url}/{value}",
                 callback=self.parse_land_establishments,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for land flats
             yield scrapy.Request(
                 url=f"{land_flats_url}/{value}",
                 callback=self.parse_land_flats,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for land utilities
             yield scrapy.Request(
                 url=f"{land_utilities_url}/{value}",
                 callback=self.parse_land_utilities,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for land attachments
             yield scrapy.Request(
                 url=f"{land_attachments_url}/{value}",
                 callback=self.parse_land_attachments,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for land registration
             yield scrapy.Request(
                 url=f"{land_registration_url}/{value}",
                 callback=self.parse_land_registration,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
             # request for land address
             yield scrapy.Request(
                 url=f"{land_address_url}/{value}",
                 callback=self.parse_land_address,
-                cb_kwargs={"id": value},
+                cb_kwargs={"identifier": value},
             )
 
     def parse_flat_info(self, response, **kwargs):
@@ -195,7 +194,24 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_land_utilities(self, response, **kwargs):
+        records = response.json()
         print({**kwargs, "data": response.json()})
+
+        flat_price_estimation_url = settings.FLAT_PRICE_ESTIMATION_URL
+        flat_price_estimation_param = settings.FLAT_PRICE_ESTIMATION_PARAM
+        flat_building_identifier = settings.FLAT_BUILDING_IDENTIFIER
+
+        ids = [str(record[flat_building_identifier]) for record in records]
+        step = 100
+        for index in range(0, len(ids), step):
+            param = ",".join(ids[index : index + step])
+
+            # request for flat price estimation
+            yield scrapy.Request(
+                url=f"{flat_price_estimation_url}?{flat_price_estimation_param}={param}",
+                callback=self.parse_flat_price_estimation,
+                cb_kwargs=kwargs,
+            )
 
     def parse_land_attachments(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
@@ -204,4 +220,7 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_land_address(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_flat_price_estimation(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
