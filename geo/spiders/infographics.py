@@ -194,6 +194,24 @@ class InfographicsSpider(scrapy.Spider):
         records = response.json()
         print({**kwargs, "data": records})
 
+        owner_information_url = settings.OWNER_INFORMATION_URL
+        owner_path = settings.OWNER_PATH
+
+        keys = owner_path.split(".")
+        ids = set()
+        for doc in records:
+            items = doc[keys[0]][keys[1]]
+            for item in items:
+                id = item[keys[2]][keys[3]]
+                ids.add(str(id))
+
+        ids = ",".join(list(ids))
+        yield scrapy.Request(
+            url=f"{owner_information_url}/{ids}",
+            callback=self.parse_owner_information,
+            cb_kwargs=kwargs,
+        )
+
     def parse_land_utilities(self, response, **kwargs):
         records = response.json()
         print({**kwargs, "data": records})
@@ -203,6 +221,8 @@ class InfographicsSpider(scrapy.Spider):
         flat_sale_ads_url = settings.FLAT_SALE_ADS_URL
         flat_sale_ads_param = settings.FLAT_SALE_ADS_PARAM
         flat_building_identifier = settings.FLAT_BUILDING_IDENTIFIER
+        building_details_url = settings.BUILDING_DETAILS_URL
+        building_details_param = settings.BUILDING_DETAILS_PARAM
 
         flat_ids = [str(record[flat_building_identifier]) for record in records]
         step = 100
@@ -223,6 +243,14 @@ class InfographicsSpider(scrapy.Spider):
                 cb_kwargs=kwargs,
             )
 
+        building_ids = set([str(record[building_details_param]) for record in records])
+        for building_id in building_ids:
+            yield scrapy.Request(
+                url=f"{building_details_url}/{building_id}",
+                callback=self.parse_building_details,
+                cb_kwargs=kwargs,
+            )
+
     def parse_land_attachments(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
 
@@ -239,4 +267,7 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_owner_information(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_building_details(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
