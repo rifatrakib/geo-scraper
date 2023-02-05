@@ -191,11 +191,12 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_land_flats(self, response, **kwargs):
-        print({**kwargs, "data": response.json()})
+        records = response.json()
+        print({**kwargs, "data": records})
 
     def parse_land_utilities(self, response, **kwargs):
         records = response.json()
-        print({**kwargs, "data": response.json()})
+        print({**kwargs, "data": records})
 
         flat_price_estimation_url = settings.FLAT_PRICE_ESTIMATION_URL
         flat_price_estimation_param = settings.FLAT_PRICE_ESTIMATION_PARAM
@@ -203,10 +204,10 @@ class InfographicsSpider(scrapy.Spider):
         flat_sale_ads_param = settings.FLAT_SALE_ADS_PARAM
         flat_building_identifier = settings.FLAT_BUILDING_IDENTIFIER
 
-        ids = [str(record[flat_building_identifier]) for record in records]
+        flat_ids = [str(record[flat_building_identifier]) for record in records]
         step = 100
-        for index in range(0, len(ids), step):
-            param = ",".join(ids[index : index + step])
+        for index in range(0, len(flat_ids), step):
+            param = ",".join(flat_ids[index : index + step])
 
             # request for flat price estimation
             yield scrapy.Request(
@@ -235,4 +236,7 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_flat_sale_ads(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_owner_information(self, response, **kwargs):
         print({**kwargs, "data": response.json()})

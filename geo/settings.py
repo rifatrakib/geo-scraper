@@ -159,6 +159,9 @@ FLAT_SALE_ADS_URL = os.environ.get("FLAT_SALE_ADS_URL")
 FLAT_SALE_ADS_PARAM = os.environ.get("FLAT_SALE_ADS_PARAM")
 FLAT_BUILDING_IDENTIFIER = os.environ.get("FLAT_BUILDING_IDENTIFIER")
 
+OWNER_INFORMATION_URL = os.environ.get("OWNER_INFORMATION_URL")
+OWNER_PATH = os.environ.get("OWNER_PATH")
+
 # database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
 MONGO_DATABASE = os.environ.get("MONGO_DATABASE")
