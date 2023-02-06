@@ -166,6 +166,8 @@ OWNER_PATH = os.environ.get("OWNER_PATH")
 BUILDING_DETAILS_URL = os.environ.get("BUILDING_DETAILS_URL")
 BUILDING_DETAILS_PARAM = os.environ.get("BUILDING_DETAILS_PARAM")
 
+LATEST_DEALINGS_URL = os.environ.get("LATEST_DEALINGS_URL")
+
 # database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
 MONGO_DATABASE = os.environ.get("MONGO_DATABASE")

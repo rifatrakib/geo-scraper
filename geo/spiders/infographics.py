@@ -226,6 +226,7 @@ class InfographicsSpider(scrapy.Spider):
         building_details_param = settings.BUILDING_DETAILS_PARAM
         flat_info_url = settings.FLAT_INFO_URL
         flat_info_query_parameter = settings.FLAT_INFO_PARAM
+        latest_dealings_url = settings.LATEST_DEALINGS_URL
 
         param = ",".join([str(record[flat_building_identifier]) for record in records])
 
@@ -249,6 +250,15 @@ class InfographicsSpider(scrapy.Spider):
         yield scrapy.Request(
             url=f"{flat_info_url}?{flat_info_query_parameter}={param}",
             callback=self.parse_flat_info,
+            cb_kwargs=kwargs,
+        )
+
+        param = f"{kwargs['identifier']},{param}"
+
+        # request for flat latest dealings
+        yield scrapy.Request(
+            url=f"{latest_dealings_url}/{param}",
+            callback=self.parse_latest_dealings,
             cb_kwargs=kwargs,
         )
 
@@ -279,4 +289,7 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_building_details(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_latest_dealings(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
