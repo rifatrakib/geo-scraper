@@ -221,8 +221,11 @@ class InfographicsSpider(scrapy.Spider):
         flat_sale_ads_url = settings.FLAT_SALE_ADS_URL
         flat_sale_ads_param = settings.FLAT_SALE_ADS_PARAM
         flat_building_identifier = settings.FLAT_BUILDING_IDENTIFIER
+        land_building_identifier = settings.LAND_BUILDING_IDENTIFIER
         building_details_url = settings.BUILDING_DETAILS_URL
         building_details_param = settings.BUILDING_DETAILS_PARAM
+        flat_info_url = settings.FLAT_INFO_URL
+        flat_info_query_parameter = settings.FLAT_INFO_PARAM
 
         param = ",".join([str(record[flat_building_identifier]) for record in records])
 
@@ -237,6 +240,15 @@ class InfographicsSpider(scrapy.Spider):
         yield scrapy.Request(
             url=f"{flat_sale_ads_url}?{flat_sale_ads_param}={param}",
             callback=self.parse_flat_sale_ads,
+            cb_kwargs=kwargs,
+        )
+
+        param = ",".join([str(record[land_building_identifier]) for record in records])
+
+        # request for flat information
+        yield scrapy.Request(
+            url=f"{flat_info_url}?{flat_info_query_parameter}={param}",
+            callback=self.parse_flat_info,
             cb_kwargs=kwargs,
         )
 
