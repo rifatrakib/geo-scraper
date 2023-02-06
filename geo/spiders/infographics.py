@@ -224,24 +224,21 @@ class InfographicsSpider(scrapy.Spider):
         building_details_url = settings.BUILDING_DETAILS_URL
         building_details_param = settings.BUILDING_DETAILS_PARAM
 
-        flat_ids = [str(record[flat_building_identifier]) for record in records]
-        step = 100
-        for index in range(0, len(flat_ids), step):
-            param = ",".join(flat_ids[index : index + step])
+        param = ",".join([str(record[flat_building_identifier]) for record in records])
 
-            # request for flat price estimation
-            yield scrapy.Request(
-                url=f"{flat_price_estimation_url}?{flat_price_estimation_param}={param}",
-                callback=self.parse_flat_price_estimation,
-                cb_kwargs=kwargs,
-            )
+        # request for flat price estimation
+        yield scrapy.Request(
+            url=f"{flat_price_estimation_url}?{flat_price_estimation_param}={param}",
+            callback=self.parse_flat_price_estimation,
+            cb_kwargs=kwargs,
+        )
 
-            # request for flat sale ads
-            yield scrapy.Request(
-                url=f"{flat_sale_ads_url}?{flat_sale_ads_param}={param}",
-                callback=self.parse_flat_sale_ads,
-                cb_kwargs=kwargs,
-            )
+        # request for flat sale ads
+        yield scrapy.Request(
+            url=f"{flat_sale_ads_url}?{flat_sale_ads_param}={param}",
+            callback=self.parse_flat_sale_ads,
+            cb_kwargs=kwargs,
+        )
 
         building_ids = set([str(record[building_details_param]) for record in records])
         for building_id in building_ids:
