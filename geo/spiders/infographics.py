@@ -327,4 +327,23 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_flat_evaluation_information(self, response, **kwargs):
+        records = response.json()
+        print({**kwargs, "data": records})
+
+        index_estimation_url = settings.INDEX_ESTIMATION_URL
+        index_estimation_param = settings.INDEX_ESTIMATION_PARAM
+        index_estimation_source = settings.INDEX_ESTIMATION_SOURCE
+
+        keys = index_estimation_source.split(".")
+
+        if records.get(keys[0], None) and records[keys[0]].get(keys[1], None):
+            param = records[keys[0]][keys[1]]
+            # request for index estimation
+            yield scrapy.Request(
+                url=f"{index_estimation_url}?{index_estimation_param}={param}",
+                callback=self.parse_index_estimation,
+                cb_kwargs=kwargs,
+            )
+
+    def parse_index_estimation(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
