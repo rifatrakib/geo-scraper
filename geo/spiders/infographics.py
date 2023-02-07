@@ -229,6 +229,8 @@ class InfographicsSpider(scrapy.Spider):
         latest_dealings_url = settings.LATEST_DEALINGS_URL
         historical_dealings_url = settings.HISTORICAL_DEALINGS_URL
         land_registration_url = settings.LAND_REGISTRATION_URL
+        flat_evaluation_url = settings.FLAT_EVALUATION_URL
+        flat_evaluation_param = settings.FLAT_EVALUATION_PARAM
 
         param = ",".join([str(record[flat_building_identifier]) for record in records])
 
@@ -289,6 +291,14 @@ class InfographicsSpider(scrapy.Spider):
                 cb_kwargs=kwargs,
             )
 
+        flat_ids = set([record[flat_building_identifier] for record in records])
+        for flat_id in flat_ids:
+            yield scrapy.Request(
+                url=f"{flat_evaluation_url}?{flat_evaluation_param}={flat_id}",
+                callback=self.parse_flat_evaluation_information,
+                cb_kwargs={**kwargs, "UNIT_ID": flat_id},
+            )
+
     def parse_land_attachments(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
 
@@ -314,4 +324,7 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_historical_dealings(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_flat_evaluation_information(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
