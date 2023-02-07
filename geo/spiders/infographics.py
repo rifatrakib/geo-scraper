@@ -334,16 +334,32 @@ class InfographicsSpider(scrapy.Spider):
         index_estimation_param = settings.INDEX_ESTIMATION_PARAM
         index_estimation_source = settings.INDEX_ESTIMATION_SOURCE
 
-        keys = index_estimation_source.split(".")
+        price_distribution_url = settings.PRICE_DISTRIBUTION_URL
+        price_distribution_param = settings.PRICE_DISTRIBUTION_PARAM
+        price_distribution_source = settings.PRICE_DISTRIBUTION_SOURCE
 
-        if records.get(keys[0], None) and records[keys[0]].get(keys[1], None):
-            param = records[keys[0]][keys[1]]
+        index_keys = index_estimation_source.split(".")
+        if records.get(index_keys[0], None) and records[index_keys[0]].get(index_keys[1], None):
+            index_param = records[index_keys[0]][index_keys[1]]
             # request for index estimation
             yield scrapy.Request(
-                url=f"{index_estimation_url}?{index_estimation_param}={param}",
+                url=f"{index_estimation_url}?{index_estimation_param}={index_param}",
                 callback=self.parse_index_estimation,
                 cb_kwargs=kwargs,
             )
 
+        price_keys = price_distribution_source.split(".")
+        if records.get(price_keys[0], None) and records[price_keys[0]].get(price_keys[1], None):
+            price_param = records[price_keys[0]][price_keys[1]]
+            # request for index estimation
+            yield scrapy.Request(
+                url=f"{price_distribution_url}?{index_estimation_param}={index_param}&{price_distribution_param}={price_param}",
+                callback=self.parse_price_distribution,
+                cb_kwargs=kwargs,
+            )
+
     def parse_index_estimation(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_price_distribution(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
