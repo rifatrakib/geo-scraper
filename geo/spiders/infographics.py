@@ -234,6 +234,7 @@ class InfographicsSpider(scrapy.Spider):
         land_registration_url = settings.LAND_REGISTRATION_URL
         flat_evaluation_url = settings.FLAT_EVALUATION_URL
         flat_evaluation_param = settings.FLAT_EVALUATION_PARAM
+        flat_utilities_url = settings.FLAT_UTILITIES_URL
 
         param = ",".join([str(record[flat_building_identifier]) for record in records])
 
@@ -302,6 +303,13 @@ class InfographicsSpider(scrapy.Spider):
             yield scrapy.Request(
                 url=f"{flat_evaluation_url}?{flat_evaluation_param}={flat_id}",
                 callback=self.parse_flat_evaluation_information,
+                cb_kwargs={**kwargs, "UNIT_ID": flat_id},
+            )
+
+            # request for flat utilities
+            yield scrapy.Request(
+                url=f"{flat_utilities_url}/{flat_id}",
+                callback=self.parse_flat_utilities,
                 cb_kwargs={**kwargs, "UNIT_ID": flat_id},
             )
 
@@ -388,4 +396,7 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_adjacent_lands(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_flat_utilities(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
