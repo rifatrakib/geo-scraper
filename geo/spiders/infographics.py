@@ -1,3 +1,5 @@
+import json
+
 import scrapy
 
 from geo import settings
@@ -206,6 +208,7 @@ class InfographicsSpider(scrapy.Spider):
                 ids.add(str(id))
 
         ids = ",".join(list(ids))
+        # request for owner information
         yield scrapy.Request(
             url=f"{owner_information_url}/{ids}",
             callback=self.parse_owner_information,
@@ -269,6 +272,7 @@ class InfographicsSpider(scrapy.Spider):
         )
 
         for land in lands:
+            # request for historical dealings
             yield scrapy.Request(
                 url=f"{historical_dealings_url}/{land}",
                 callback=self.parse_historical_dealings,
@@ -285,6 +289,7 @@ class InfographicsSpider(scrapy.Spider):
 
         building_ids = set([str(record[building_details_param]) for record in records])
         for building_id in building_ids:
+            # request for building details
             yield scrapy.Request(
                 url=f"{building_details_url}/{building_id}",
                 callback=self.parse_building_details,
@@ -293,6 +298,7 @@ class InfographicsSpider(scrapy.Spider):
 
         flat_ids = set([record[flat_building_identifier] for record in records])
         for flat_id in flat_ids:
+            # request for flat evaluation
             yield scrapy.Request(
                 url=f"{flat_evaluation_url}?{flat_evaluation_param}={flat_id}",
                 callback=self.parse_flat_evaluation_information,
@@ -338,6 +344,9 @@ class InfographicsSpider(scrapy.Spider):
         price_distribution_param = settings.PRICE_DISTRIBUTION_PARAM
         price_distribution_source = settings.PRICE_DISTRIBUTION_SOURCE
 
+        adjacent_lands_url = settings.ADJACENT_LANDS_URL
+        adjacent_lands_source = settings.ADJACENT_LANDS_SOURCE
+
         index_keys = index_estimation_source.split(".")
         if records.get(index_keys[0], None) and records[index_keys[0]].get(index_keys[1], None):
             index_param = records[index_keys[0]][index_keys[1]]
@@ -351,10 +360,24 @@ class InfographicsSpider(scrapy.Spider):
         price_keys = price_distribution_source.split(".")
         if records.get(price_keys[0], None) and records[price_keys[0]].get(price_keys[1], None):
             price_param = records[price_keys[0]][price_keys[1]]
-            # request for index estimation
+            # request for price distribution
             yield scrapy.Request(
                 url=f"{price_distribution_url}?{index_estimation_param}={index_param}&{price_distribution_param}={price_param}",
                 callback=self.parse_price_distribution,
+                cb_kwargs=kwargs,
+            )
+
+        adjacent_keys = adjacent_lands_source.split(",")
+        if records.get(index_keys[0], None):
+            payload = {}
+            for key in adjacent_keys:
+                payload[key] = records[index_keys[0]][key]
+            # request for adjacent lands
+            yield scrapy.Request(
+                url=adjacent_lands_url,
+                method="POST",
+                body=json.dumps(payload),
+                callback=self.parse_adjacent_lands,
                 cb_kwargs=kwargs,
             )
 
@@ -362,4 +385,7 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_price_distribution(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_adjacent_lands(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
