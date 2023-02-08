@@ -185,6 +185,9 @@ ADJACENT_LANDS_SOURCE = os.environ.get("ADJACENT_LANDS_SOURCE")
 
 FLAT_UTILITIES_URL = os.environ.get("FLAT_UTILITIES_URL")
 
+FLAT_ASSOCIATION_URL = os.environ.get("FLAT_ASSOCIATION_URL")
+FLAT_ASSOCIATION_PARAM = os.environ.get("FLAT_ASSOCIATION_PARAM")
+
 # database credentials
 MONGO_URI = os.environ.get("MONGO_URI")
 MONGO_DATABASE = os.environ.get("MONGO_DATABASE")

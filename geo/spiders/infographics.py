@@ -235,6 +235,8 @@ class InfographicsSpider(scrapy.Spider):
         flat_evaluation_url = settings.FLAT_EVALUATION_URL
         flat_evaluation_param = settings.FLAT_EVALUATION_PARAM
         flat_utilities_url = settings.FLAT_UTILITIES_URL
+        flat_association_url = settings.FLAT_ASSOCIATION_URL
+        flat_association_param = settings.FLAT_ASSOCIATION_PARAM
 
         param = ",".join([str(record[flat_building_identifier]) for record in records])
 
@@ -310,6 +312,13 @@ class InfographicsSpider(scrapy.Spider):
             yield scrapy.Request(
                 url=f"{flat_utilities_url}/{flat_id}",
                 callback=self.parse_flat_utilities,
+                cb_kwargs={**kwargs, "UNIT_ID": flat_id},
+            )
+
+            # request for flat association
+            yield scrapy.Request(
+                url=f"{flat_association_url}?{flat_association_param}={flat_id}",
+                callback=self.parse_flat_associations,
                 cb_kwargs={**kwargs, "UNIT_ID": flat_id},
             )
 
@@ -399,4 +408,7 @@ class InfographicsSpider(scrapy.Spider):
         print({**kwargs, "data": response.json()})
 
     def parse_flat_utilities(self, response, **kwargs):
+        print({**kwargs, "data": response.json()})
+
+    def parse_flat_associations(self, response, **kwargs):
         print({**kwargs, "data": response.json()})
