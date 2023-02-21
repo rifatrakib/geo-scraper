@@ -1,10 +1,11 @@
 import json
 from datetime import datetime
+from pathlib import Path
 
 import scrapy
 
 from geo import settings
-from geo.utils import extract_data_from_stored_records
+from geo.utils import extract_data_from_stored_records, prepare_scraping_session
 
 
 class InfographicsSpider(scrapy.Spider):
@@ -13,7 +14,12 @@ class InfographicsSpider(scrapy.Spider):
     def start_requests(self):
         connector = settings.THRESHOLDS_CONNECTOR
         identifier = settings.THRESHOLDS_IDENTIFIER
-        records = extract_data_from_stored_records(connector, identifier)
+
+        file_path = Path("spider-tracker.json")
+        if file_path.exists():
+            records = prepare_scraping_session(connector, identifier)
+        else:
+            records = extract_data_from_stored_records(connector, identifier)
 
         flat_info_url = settings.FLAT_INFO_URL
         flat_info_query_parameter = settings.FLAT_INFO_PARAM
@@ -44,7 +50,10 @@ class InfographicsSpider(scrapy.Spider):
         land_registration_url = settings.LAND_REGISTRATION_URL
         land_address_url = settings.LAND_ADDRESS_URL
 
-        for record in records:
+        for idx, record in enumerate(records):
+            with open("last-record.json", "w") as writer:
+                writer.write(json.dumps({**record, "index": idx}))
+
             value = record[identifier]
             short_value = "-".join(value.split("-")[:3]).lstrip("0")
 
@@ -162,285 +171,302 @@ class InfographicsSpider(scrapy.Spider):
 
     def parse_flat_info(self, response, **kwargs):
         data = response.json()
-        for item in data:
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if data:
+            for item in data:
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_warning(self, response, **kwargs):
         records = response.json()
-        record = {**records, **kwargs, "metadata": response.meta}
-        record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-        yield record
+        if records:
+            record = {**records, **kwargs, "metadata": response.meta}
+            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+            yield record
 
     def parse_purpose(self, response, **kwargs):
         data = response.json()
-        for item in data:
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if data:
+            for item in data:
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_plan(self, response, **kwargs):
         records = response.json()
-        record = {**records, **kwargs, "metadata": response.meta}
-        record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-        yield record
+        if records:
+            record = {**records, **kwargs, "metadata": response.meta}
+            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+            yield record
 
     def parse_dwellers(self, response, **kwargs):
         data = response.json()
-        for item in data:
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if data:
+            for item in data:
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_apartments(self, response, **kwargs):
         data = response.json()
-        for item in data.get("data", []):
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if data:
+            for item in data.get("data", []):
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_subleters(self, response, **kwargs):
         data = response.json()
-        for item in data.get("data", []):
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if data:
+            for item in data.get("data", []):
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_external_links(self, response, **kwargs):
         records = response.json()
-        record = {**records, **kwargs, "metadata": response.meta}
-        record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-        yield record
+        if records:
+            record = {**records, **kwargs, "metadata": response.meta}
+            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+            yield record
 
     def parse_flat_registration(self, response, **kwargs):
         records = response.json()
-        record = {**records, **kwargs, "metadata": response.meta}
-        record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-        yield record
+        if records:
+            record = {**records, **kwargs, "metadata": response.meta}
+            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+            yield record
 
     def parse_flat_location(self, response, **kwargs):
         records = response.json()
-        record = {**records, **kwargs, "metadata": response.meta}
-        record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-        yield record
+        if records:
+            record = {**records, **kwargs, "metadata": response.meta}
+            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+            yield record
 
     def parse_land_establishments(self, response, **kwargs):
         data = response.json()
-        for item in data:
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if data:
+            for item in data:
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_land_flats(self, response, **kwargs):
         records = response.json()
-        for item in records:
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if records:
+            for item in records:
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
-        owner_information_url = settings.OWNER_INFORMATION_URL
-        owner_path = settings.OWNER_PATH
+            owner_information_url = settings.OWNER_INFORMATION_URL
+            owner_path = settings.OWNER_PATH
 
-        keys = owner_path.split(".")
-        ids = set()
-        for doc in records:
-            items = doc[keys[0]][keys[1]]
-            for item in items:
-                id = item[keys[2]][keys[3]]
-                ids.add(str(id))
+            keys = owner_path.split(".")
+            ids = set()
+            for doc in records:
+                items = doc[keys[0]][keys[1]]
+                for item in items:
+                    id = item[keys[2]][keys[3]]
+                    ids.add(str(id))
 
-        ids = ",".join(list(ids))
-        # request for owner information
-        yield scrapy.Request(
-            url=f"{owner_information_url}/{ids}",
-            callback=self.parse_owner_information,
-            cb_kwargs=kwargs,
-        )
+            ids = ",".join(list(ids))
+            # request for owner information
+            yield scrapy.Request(
+                url=f"{owner_information_url}/{ids}",
+                callback=self.parse_owner_information,
+                cb_kwargs=kwargs,
+            )
 
     def parse_land_utilities(self, response, **kwargs):
         records = response.json()
-        for item in records:
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if records:
+            for item in records:
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
-        flat_price_estimation_url = settings.FLAT_PRICE_ESTIMATION_URL
-        flat_price_estimation_param = settings.FLAT_PRICE_ESTIMATION_PARAM
-        flat_sale_ads_url = settings.FLAT_SALE_ADS_URL
-        flat_sale_ads_param = settings.FLAT_SALE_ADS_PARAM
-        flat_building_identifier = settings.FLAT_BUILDING_IDENTIFIER
-        land_building_identifier = settings.LAND_BUILDING_IDENTIFIER
-        building_details_url = settings.BUILDING_DETAILS_URL
-        building_details_param = settings.BUILDING_DETAILS_PARAM
-        flat_info_url = settings.FLAT_INFO_URL
-        flat_info_query_parameter = settings.FLAT_INFO_PARAM
-        latest_dealings_url = settings.LATEST_DEALINGS_URL
-        historical_dealings_url = settings.HISTORICAL_DEALINGS_URL
-        land_registration_url = settings.LAND_REGISTRATION_URL
-        flat_evaluation_url = settings.FLAT_EVALUATION_URL
-        flat_evaluation_param = settings.FLAT_EVALUATION_PARAM
-        flat_utilities_url = settings.FLAT_UTILITIES_URL
-        flat_association_url = settings.FLAT_ASSOCIATION_URL
-        flat_ads_connection_url = settings.FLAT_ADS_CONNECTION_URL
-        flat_association_param = settings.FLAT_ASSOCIATION_PARAM
+            flat_price_estimation_url = settings.FLAT_PRICE_ESTIMATION_URL
+            flat_price_estimation_param = settings.FLAT_PRICE_ESTIMATION_PARAM
+            flat_sale_ads_url = settings.FLAT_SALE_ADS_URL
+            flat_sale_ads_param = settings.FLAT_SALE_ADS_PARAM
+            flat_building_identifier = settings.FLAT_BUILDING_IDENTIFIER
+            land_building_identifier = settings.LAND_BUILDING_IDENTIFIER
+            building_details_url = settings.BUILDING_DETAILS_URL
+            building_details_param = settings.BUILDING_DETAILS_PARAM
+            flat_info_url = settings.FLAT_INFO_URL
+            flat_info_query_parameter = settings.FLAT_INFO_PARAM
+            latest_dealings_url = settings.LATEST_DEALINGS_URL
+            historical_dealings_url = settings.HISTORICAL_DEALINGS_URL
+            land_registration_url = settings.LAND_REGISTRATION_URL
+            flat_evaluation_url = settings.FLAT_EVALUATION_URL
+            flat_evaluation_param = settings.FLAT_EVALUATION_PARAM
+            flat_utilities_url = settings.FLAT_UTILITIES_URL
+            flat_association_url = settings.FLAT_ASSOCIATION_URL
+            flat_association_param = settings.FLAT_ASSOCIATION_PARAM
 
-        param = ",".join([str(record[flat_building_identifier]) for record in records])
+            param = ",".join([str(record[flat_building_identifier]) for record in records])
 
-        # request for flat price estimation
-        yield scrapy.Request(
-            url=f"{flat_price_estimation_url}?{flat_price_estimation_param}={param}",
-            callback=self.parse_flat_price_estimation,
-            cb_kwargs=kwargs,
-        )
-
-        # request for flat sale ads
-        yield scrapy.Request(
-            url=f"{flat_sale_ads_url}?{flat_sale_ads_param}={param}",
-            callback=self.parse_flat_sale_ads,
-            cb_kwargs=kwargs,
-        )
-
-        lands = [record[land_building_identifier] for record in records]
-        param = ",".join(lands)
-
-        # request for flat information
-        yield scrapy.Request(
-            url=f"{flat_info_url}?{flat_info_query_parameter}={param}",
-            callback=self.parse_flat_info,
-            cb_kwargs=kwargs,
-        )
-
-        lands.append(kwargs["identifier"])
-        param = ",".join(lands)
-
-        # request for flat latest dealings
-        yield scrapy.Request(
-            url=f"{latest_dealings_url}/{param}",
-            callback=self.parse_latest_dealings,
-            cb_kwargs=kwargs,
-        )
-
-        for land in lands:
-            # request for historical dealings
+            # request for flat price estimation
             yield scrapy.Request(
-                url=f"{historical_dealings_url}/{land}",
-                callback=self.parse_historical_dealings,
+                url=f"{flat_price_estimation_url}?{flat_price_estimation_param}={param}",
+                callback=self.parse_flat_price_estimation,
                 cb_kwargs=kwargs,
             )
 
-            # request for land registration
-            if land != kwargs["identifier"]:
+            # request for flat sale ads
+            yield scrapy.Request(
+                url=f"{flat_sale_ads_url}?{flat_sale_ads_param}={param}",
+                callback=self.parse_flat_sale_ads,
+                cb_kwargs=kwargs,
+            )
+
+            lands = [record[land_building_identifier] for record in records]
+            param = ",".join(lands)
+
+            # request for flat information
+            yield scrapy.Request(
+                url=f"{flat_info_url}?{flat_info_query_parameter}={param}",
+                callback=self.parse_flat_info,
+                cb_kwargs=kwargs,
+            )
+
+            lands.append(kwargs["identifier"])
+            param = ",".join(lands)
+
+            # request for flat latest dealings
+            yield scrapy.Request(
+                url=f"{latest_dealings_url}/{param}",
+                callback=self.parse_latest_dealings,
+                cb_kwargs=kwargs,
+            )
+
+            for land in lands:
+                # request for historical dealings
                 yield scrapy.Request(
-                    url=f"{land_registration_url}/{land}",
-                    callback=self.parse_land_registration,
-                    cb_kwargs={"identifier": land},
+                    url=f"{historical_dealings_url}/{land}",
+                    callback=self.parse_historical_dealings,
+                    cb_kwargs=kwargs,
                 )
 
-        building_ids = set([str(record[building_details_param]) for record in records])
-        for building_id in building_ids:
-            # request for building details
-            yield scrapy.Request(
-                url=f"{building_details_url}/{building_id}",
-                callback=self.parse_building_details,
-                cb_kwargs=kwargs,
-            )
+                # request for land registration
+                if land != kwargs["identifier"]:
+                    yield scrapy.Request(
+                        url=f"{land_registration_url}/{land}",
+                        callback=self.parse_land_registration,
+                        cb_kwargs={"identifier": land},
+                    )
 
-        flat_ids = set([record[flat_building_identifier] for record in records])
-        for flat_id in flat_ids:
-            # request for flat evaluation
-            yield scrapy.Request(
-                url=f"{flat_evaluation_url}?{flat_evaluation_param}={flat_id}",
-                callback=self.parse_flat_evaluation_information,
-                cb_kwargs={**kwargs, "UNIT_ID": flat_id},
-            )
+            building_ids = set([str(record[building_details_param]) for record in records])
+            for building_id in building_ids:
+                # request for building details
+                yield scrapy.Request(
+                    url=f"{building_details_url}/{building_id}",
+                    callback=self.parse_building_details,
+                    cb_kwargs=kwargs,
+                )
 
-            # request for flat utilities
-            yield scrapy.Request(
-                url=f"{flat_utilities_url}/{flat_id}",
-                callback=self.parse_flat_utilities,
-                cb_kwargs={**kwargs, "UNIT_ID": flat_id},
-            )
+            flat_ids = set([record[flat_building_identifier] for record in records])
+            for flat_id in flat_ids:
+                # request for flat evaluation
+                yield scrapy.Request(
+                    url=f"{flat_evaluation_url}?{flat_evaluation_param}={flat_id}",
+                    callback=self.parse_flat_evaluation_information,
+                    cb_kwargs={**kwargs, "UNIT_ID": flat_id},
+                )
 
-            # request for flat association
-            yield scrapy.Request(
-                url=f"{flat_association_url}?{flat_association_param}={flat_id}",
-                callback=self.parse_flat_associations,
-                cb_kwargs={**kwargs, "UNIT_ID": flat_id},
-            )
+                # request for flat utilities
+                yield scrapy.Request(
+                    url=f"{flat_utilities_url}/{flat_id}",
+                    callback=self.parse_flat_utilities,
+                    cb_kwargs={**kwargs, "UNIT_ID": flat_id},
+                )
 
-            # request for flat ads connection
-            yield scrapy.Request(
-                url=f"{flat_ads_connection_url}?{flat_association_param}={flat_id}",
-                callback=self.parse_flat_ads_connections,
-                cb_kwargs={**kwargs, "UNIT_ID": flat_id},
-            )
+                # request for flat association
+                yield scrapy.Request(
+                    url=f"{flat_association_url}?{flat_association_param}={flat_id}",
+                    callback=self.parse_flat_associations,
+                    cb_kwargs={**kwargs, "UNIT_ID": flat_id},
+                )
 
     def parse_land_attachments(self, response, **kwargs):
         data = response.json()
-        yield {"data": data, **kwargs, "metadata": response.meta}
+        if data:
+            yield {"data": data, **kwargs, "metadata": response.meta}
 
     def parse_land_registration(self, response, **kwargs):
         records = response.json()
-        for item in records:
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if records:
+            for item in records:
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_land_address(self, response, **kwargs):
         records = response.json()
-        data = records.get("property_details", {})
-        record = {**data, **kwargs, "metadata": response.meta}
-        record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-        yield record
+        if records:
+            data = records.get("property_details", {})
+            if data:
+                record = {**data, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_flat_price_estimation(self, response, **kwargs):
         records = response.json()
-        for item in records:
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if records:
+            for item in records:
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_flat_sale_ads(self, response, **kwargs):
         records = response.json()
-        for item in records:
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if records:
+            for item in records:
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_owner_information(self, response, **kwargs):
         records = response.json()
-        for item in records:
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if records:
+            for item in records:
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_building_details(self, response, **kwargs):
         records = response.json()
-        record = {**records, **kwargs, "metadata": response.meta}
-        record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-        yield record
+        if records:
+            record = {**records, **kwargs, "metadata": response.meta}
+            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+            yield record
 
     def parse_latest_dealings(self, response, **kwargs):
         records = response.json()
-        for item in records:
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if records:
+            for item in records:
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_historical_dealings(self, response, **kwargs):
         records = response.json()
-        for item in records:
-            record = {**item, **kwargs, "metadata": response.meta}
-            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-            yield record
+        if records:
+            for item in records:
+                record = {**item, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_flat_evaluation_information(self, response, **kwargs):
         records = response.json()
-        data = records.get("valuation", {})
-        record = {**data, **kwargs, "metadata": response.meta}
-        record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-        yield record
+        if records:
+            data = records.get("valuation", {})
+            if data:
+                record = {**data, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
         index_estimation_url = settings.INDEX_ESTIMATION_URL
         index_estimation_param = settings.INDEX_ESTIMATION_PARAM
@@ -489,38 +515,37 @@ class InfographicsSpider(scrapy.Spider):
 
     def parse_index_estimation(self, response, **kwargs):
         records = response.json()
-        data = records.get("index_valuation", {})
-        record = {**data, **kwargs, "metadata": response.meta}
-        record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-        yield record
+        if records:
+            data = records.get("index_valuation", {})
+            if data:
+                record = {**data, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_price_distribution(self, response, **kwargs):
         records = response.json()
-        data = records.get("price_distribution", {})
-        record = {**data, **kwargs, "metadata": response.meta}
-        record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-        yield record
+        if records:
+            data = records.get("price_distribution", {})
+            if data:
+                record = {**data, **kwargs, "metadata": response.meta}
+                record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+                yield record
 
     def parse_adjacent_lands(self, response, **kwargs):
-        records = response.json()
-        record = {**records, **kwargs, "metadata": response.meta}
-        record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-        yield record
-
-    def parse_flat_utilities(self, response, **kwargs):
-        records = response.json()
-        record = {**records, **kwargs, "metadata": response.meta}
-        record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
-        yield record
-
-    def parse_flat_associations(self, response, **kwargs):
         records = response.json()
         if records:
             record = {**records, **kwargs, "metadata": response.meta}
             record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
             yield record
 
-    def parse_flat_ads_connections(self, response, **kwargs):
+    def parse_flat_utilities(self, response, **kwargs):
+        records = response.json()
+        if records:
+            record = {**records, **kwargs, "metadata": response.meta}
+            record["metadata"]["yield_time"] = datetime.utcnow().isoformat()
+            yield record
+
+    def parse_flat_associations(self, response, **kwargs):
         records = response.json()
         if records:
             record = {**records, **kwargs, "metadata": response.meta}
