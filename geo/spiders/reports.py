@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import scrapy
 
 from geo import settings
@@ -30,4 +32,4 @@ class ReportsSpider(scrapy.Spider):
                 )
 
     def parse_report(self, response, **kwargs):
-        print({**kwargs, "data": response.json()})
+        yield {**kwargs, "data": response.json(), "metadata": {**response.meta, "yield_time": datetime.utcnow().isoformat()}}
